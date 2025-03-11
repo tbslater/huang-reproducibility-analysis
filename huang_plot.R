@@ -123,6 +123,29 @@ plot_func <- function(sim_lst, scenarios){
   
 }
 
+## Figure 2 ##
+sim_lst <- list(baseline, 
+                exclusive, 
+                double)
+
+scenarios <- c('Baseline',
+               'Exclusive-use', 
+               'Two angio INRs') 
+
+plot_func(sim_lst, scenarios)
+
+## Supplementary figure ##
+sim_lst <- list(baseline, 
+                baseline_double, 
+                baseline_triple)
+
+scenarios <- c('Baseline',
+               'Doubling ECR Patients', 
+               'Tripling ECR Patients') 
+
+plot_func(sim_lst, scenarios)
+
+#####################################################################
 
 plot_func_hours <- function(sim_lst1, sim_lst2, sim_lst3, scenarios){
   
@@ -150,7 +173,6 @@ plot_func_hours <- function(sim_lst1, sim_lst2, sim_lst3, scenarios){
     plot_df <- rbind(plot_df, df)
     
   }
-
   
   ## Produce plot ##
   plt <- ggplot(plot_df) + 
@@ -174,6 +196,28 @@ plot_func_hours <- function(sim_lst1, sim_lst2, sim_lst3, scenarios){
   
 }
 
+## 5pm ##
+sim_lst1 <- list(baseline,
+                 exclusive, 
+                 double)
+
+## 6pm ##
+sim_lst2 <- list(baseline_hr,
+                 exclusive_hr, 
+                 double_hr)
+
+## 7pm ##
+sim_lst3 <- list(baseline_2hr,
+                 exclusive_2hr, 
+                 double_2hr)
+
+scenarios <- c('Baseline',
+               'Exclusive-use', 
+               'Two angio INRs') 
+
+plot_func_hours(sim_lst1, sim_lst2, sim_lst3, scenarios)
+
+############################################################
 
 plot_wait <- function(df_base, df_lst, scenarios){
   
@@ -221,7 +265,8 @@ plot_wait <- function(df_base, df_lst, scenarios){
     geom_col(aes(x = factor(scenario, scenarios),
                  y = added_time)) +
     xlab('Scenarios') +
-    ylab('Mean disability-free life added (days)')
+    ylab('Mean disability-free life added (days)') + 
+    theme(axis.title = element_text(size=14, face='bold'))
   
 }
 
@@ -306,7 +351,8 @@ plot_util <- function(df_lst, scenarios, res){
                        limits = c(0, 0.4), 
                        breaks = seq(0, 2, .2)) +
     xlab('Scenario') +
-    ylab('Utilization')
+    ylab('Utilization') + 
+    theme(axis.title = element_text(size=14, face='bold'))
   
 }
 
