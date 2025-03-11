@@ -10,9 +10,6 @@ library(dplyr)
 library(plotly)
 library("gridExtra")
 
-## Set seed for simulation ##
-set.seed(14112024)
-
 ## Parameter names ##
 paramNames <- c("ct", "angio_inr", "angio_ir", "stroke_staff", "ed_staff",
                 "angio_staff", "ir", "inr", "angio_staff_night", "ir_night",
@@ -29,7 +26,7 @@ simulate_nav <- function(ct = 2, angio_inr = 1, angio_ir = 1,
                          ir_night = 1, inr_night = 1, ed_pt = 107700, 
                          st_pt = 750, ais_pt = 450, ecr_pt = 58, 
                          inr_pt = 104, eir_pt= 468, ir_pt = 3805,  
-                         shifts = c(8,17), nsim = 10, run_t = 365) {
+                         shifts = c(8,17), nsim = 30, run_t = 365) {
   
   ########################################################################
   ######### A function to perform DES applied to ECR service ############# 
@@ -183,17 +180,17 @@ simulate_nav <- function(ct = 2, angio_inr = 1, angio_ir = 1,
     seize("angio_staff", 1) %>% # 1x angio_staff in use
     timeout(function() rnorm(1, 20,10)) %>% # delay ~N(20,100) mins
     release("angio_staff", 1) %>% # 1x angio_staff available
-    # comment in/out the below 3 lines for exclusive scenario
+    # comment in/out the below 4 lines for exclusive scenario
     simmer::select(resources = c("angio_ir", "angio_inr"),
                    policy = "shortest-queue") %>% # choose quickest option
     seize_selected(amount = 1) %>% # IR/INR machine in use
-    #seize("angio_ir", 1) %>% # IR machine in use
+    # seize("angio_ir", 1) %>% # IR machine in use
     seize("ir", 1) %>% # IR in use
     seize("angio_staff", 3) %>% # 3x angio_staff in use
     timeout(function() rnorm(1, 60,30)) %>% # delay ~N(60,900) mins
     # comment in/out the below 2 lines for exclusive scenario
     release_selected(amount=1) %>% # IR/INR machine available
-    #release("angio_ir", 1) %>% # IR machine available
+    # release("angio_ir", 1) %>% # IR machine available
     release("ir", 1) %>% # IR available
     release("angio_staff",3) # 3x angio_staff available
   
@@ -332,182 +329,6 @@ simulate_nav <- function(ct = 2, angio_inr = 1, angio_ir = 1,
   list_containing_output <- list(arrivals, resources)
   
   return(list_containing_output)
-
-}
-
-#############################################################################
-########################### PLOTTING FUNCTIONS ##############################
-#############################################################################
-
-plot_nav <- function(list_containing_output) {
- 
-  ###########################################################################
-  ############## Function to plot the simulation results ####################
-  ###########################################################################
-  ## INPUTS: ##
-  ## list_containing_output: [lst] list of results 
-  ###########################################################################
-  ## OUTPUTS: ##
-  ## grid of plots
-  ###########################################################################
-  arrivals <- data.frame(list_containing_output[[1]]) 
-  resources <- list_containing_output[[2]] 
-  
-  # s1 <- subset(arrivals, resource == "angio_inr") %>%
-  #   group_by(replication, category) %>% 
-  #   summarize("fast <20 min" = sum(wait_time < 20), 
-  #             "medium 20-40 min" = sum(wait_time >= 20 & wait_time <= 40), 
-  #             "slow >40 min" = sum(wait_time > 40)) %>%
-  #   ungroup %>%
-  #   dplyr::select(replication, category, 
-  #                 "fast <20 min", "slow >40 min", "medium 20-40 min") %>%
-  #   tidyr::gather(key=statistic, value = count, -replication, -category) %>% 
-  #   filter(category != "inr" & category != "ir" & category != "eir") %>%
-  #   ggplot(aes(factor(0),count)) + 
-  #   geom_boxplot() + 
-  #   facet_wrap(category~statistic) + 
-  #   ylab("Patient count") + 
-  #   ggtitle("Stroke patient wait time at angio INR") + 
-  #   theme(plot.title = element_text(size=18, face = "bold"), 
-  #         axis.text = element_text(size=12), 
-  #         axis.title = element_text(size=14), 
-  #         strip.text = element_text(size=14, face = "bold"),  
-  #         axis.title.x=element_blank(), 
-  #         axis.text.x=element_blank(), 
-  #         axis.ticks.x=element_blank())
-  # 
-  # s2 <- subset(arrivals, resource == "angio_inr") %>%
-  #   group_by(replication, category) %>%
-  #   summarize("fast <20 min" = sum(wait_time < 20), 
-  #             "medium 20-40 min" = sum(wait_time >= 20 & wait_time <= 40), 
-  #             "slow >40 min" = sum(wait_time > 40)) %>%
-  #   ungroup %>%
-  #   dplyr::select(replication, category, 
-  #                 "fast <20 min", "slow >40 min", "medium 20-40 min") %>%
-  #   tidyr::gather(key=statistic, value = count, -replication, -category) %>%
-  #   filter(category != "ed" & category != "ir" & category != "eir") %>%
-  #   ggplot(aes(factor(0),count)) + 
-  #   geom_boxplot() + 
-  #   facet_wrap(category~statistic) + 
-  #   ylab("Patient count") + 
-  #   ggtitle("INR patient wait time at angio INR") + 
-  #   theme(plot.title = element_text(size=18, face = "bold"), 
-  #         axis.text = element_text(size=12), 
-  #         axis.title = element_text(size=14), 
-  #         strip.text = element_text(size=14, face = "bold"),  
-  #         axis.title.x = element_blank(), 
-  #         axis.text.x=element_blank(), 
-  #         axis.ticks.x=element_blank())
-  # 
-  # if (sum(arrivals$resource == "angio_ir") == 0)
-  #   s3 <- NULL
-  # else {
-  #   s3 <- filter(arrivals, resource == "angio_ir") %>%
-  #     group_by(replication, category) %>% 
-  #     summarize("fast <20 min" = sum(wait_time < 20), 
-  #               "medium 20-40 min" = sum(wait_time >= 20 & wait_time <= 40), 
-  #               "slow >40 min" = sum(wait_time > 40)) %>% 
-  #     ungroup %>%
-  #     dplyr::select(replication, category, 
-  #                   "fast <20 min", "slow >40 min", "medium 20-40 min") %>%
-  #     tidyr::gather(key=statistic, value = count, -replication, -category) %>%
-  #     filter(category != "ed" & category != "inr" & category != "ir") %>%
-  #     ggplot(aes(factor(0),count)) + 
-  #     geom_boxplot() + 
-  #     facet_wrap(category~statistic) +
-  #     ylab("Patient count") +
-  #     ggtitle("Emergency IR patient wait time at angio IR") +
-  #     theme(plot.title = element_text(size=18, face = "bold"),
-  #           axis.text = element_text(size=12), 
-  #           axis.title = element_text(size=14), 
-  #           strip.text = element_text(size=14, face = "bold"),
-  #           axis.title.x=element_blank(), 
-  #           axis.text.x=element_blank(), 
-  #           axis.ticks.x=element_blank())
-  # }
-  # 
-  # if (sum(arrivals$resource == "angio_ir") == 0)
-  #   s4 <- NULL
-  # else {
-  #   s4<- subset(arrivals, resource == "angio_ir") %>%
-  #     group_by(replication, category) %>%
-  #     summarize("fast <20 min" = sum(wait_time < 20), 
-  #               "medium 20-40 min" = sum(wait_time >= 20 & wait_time <= 40), 
-  #               "slow >40 min" = sum(wait_time > 40)) %>%
-  #     ungroup %>%
-  #     dplyr::select(replication, category, 
-  #                   "fast <20 min", "slow >40 min", "medium 20-40 min") %>%
-  #     tidyr::gather(key=statistic, value = count, -replication, -category) %>%
-  #     filter(category != "ed" & category != "inr" & category != "eir") %>%
-  #     ggplot(aes(factor(0),count)) +
-  #     geom_boxplot() +
-  #     facet_wrap(category~statistic) +
-  #     ylab("Patient count") +
-  #     ggtitle("Non-emergency IR patient wait time at angio IR") +
-  #     theme(plot.title = element_text(size=18, face = "bold"),
-  #           axis.text = element_text(size=12),
-  #           axis.title = element_text(size=14),
-  #           strip.text = element_text(size=14, face = "bold"),  
-  #           axis.title.x=element_blank(), 
-  #           axis.text.x=element_blank(), 
-  #           axis.ticks.x=element_blank())
-  # }
-  # 
-  n1 <- subset(arrivals, category != "ir" & category != "eir" &
-                 category != "inr" & resource != "door") %>%
-    ggplot() +
-    geom_density(aes(x=wait_time) ) +
-    # facet_wrap(~resource) +
-    ggtitle("Overview of Stroke patient wait time at various resources") +
-    theme(plot.title = element_text(size=18, face = "bold"),
-          axis.text = element_text(size=12),
-          axis.title = element_text(size=14),
-          strip.text = element_text(size=14, face = "bold")) +
-    ylab("Patient count") + scale_y_continuous(limits=c(0,80))
-  # 
-  # note that this not data.frame ob
-  s2 <- plot(resources, metric ="usage", c("angio_inr", "inr"),
-             items=c("server", "queue"), steps = TRUE)
-  s3 <- plot(resources, metric ="usage", c("angio_ir", "ir"),
-             items=c("server", "queue"), steps = TRUE)
-
-  scat1 <- subset(arrivals, resource == "angio_inr") %>%
-    ggplot(aes(x=start_time, y=wait_time, color=category)) +
-    geom_point() +
-    ggtitle("angio inr wait t vs run time")
-  scat2 <- subset(arrivals, resource == "angio_ir") %>%
-    ggplot(aes(x=start_time, y=wait_time, color=category)) +
-    geom_point() +
-    ggtitle("angio ir wait t vs run time")
-  
-  a <- subset(resources, resource != "door" )
-  u1 <- plot(a, metric ="utilization") + 
-    theme(plot.title = element_text(size=18, face = "bold"), 
-          axis.text = element_text(size=12), 
-          axis.title = element_text(size=14)) + 
-    ylab("Median occupancy ratio") + ggtitle("Resource utilisation")
-  
-  myPlotList <- plyr::compact(list(n1))
-  do.call(grid.arrange,  myPlotList)
-}
-  
-server <- function(input, output) {
-  
-  getParams <- function(prefix) {
-    input[[paste0(prefix, "_recalc")]]
-    
-    params <- lapply(paramNames, function(p) {
-      input[[paste0(prefix, "_", p)]]
-    })
-    
-    names(params) <- paramNames
-    return(params)
-  }
-  
-  output$a_distPlot <- renderPlot({
-    input$goButton
-    plot_nav(isolate(do.call(simulate_nav, getParams("a"))))
-  })
 
 }
 
