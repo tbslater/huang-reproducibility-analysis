@@ -1,6 +1,4 @@
-###########################################################################
-############### HUANG ET AL. - REPRODUCIBILITY ANALYSIS ###################
-###########################################################################
+################################################################################
 
 ## Load relevant packages ##
 library(simmer)
@@ -10,15 +8,46 @@ library(dplyr)
 library(plotly)
 library("gridExtra")
 
-## Parameter names ##
+# Parameter names 
 paramNames <- c("ct", "angio_inr", "angio_ir", "stroke_staff", "ed_staff",
                 "angio_staff", "ir", "inr", "angio_staff_night", "ir_night",
                 "inr_night", "ed_pt", "st_pt", "ais_pt", "ecr_pt", "inr_pt", 
                 "eir_pt", "ir_pt", "shifts", "nsim", "run_t")
 
-###########################################################################
-########################## SIMULATION FUNCTION ############################
-###########################################################################
+################################################################################
+
+#' @title Simulation of Huang et al.'s ECR DES model (2019)
+#' 
+#' @description
+#' `simulate_nav` performs repeat simulations of a discrete-event simulation
+#' model in the context of ECR patient treatment. The code below has seen only
+#' minor modifications from the original source code, found at 
+#' https://github.com/shiweih/desECR and credit should be given to the original
+#' authors of this. 
+#' 
+#' @param ct [int] no. of CT machines (default: 2)
+#' @param angio_inr [int] no. of angio INR machines (default: 1)
+#' @param angio_ir [int] no. of angio IR machines (default: 1)
+#' @param stroke_staff [int] no. of stroke team staff (default: 1)
+#' @param ed_staff [int] no. of ED staff (default: 10)
+#' @param angio_staff [int] no. of daytime angio staff (default: 6)
+#' @param ir [int] no. of daytime IRs (default: 2)
+#' @param inr [int] no. of daytime INRs (default: 1)
+#' @param angio_staff_night [int] no. of nighttime angio staff (default: 3) 
+#' @param ir_night [int] no. of nighttime IRs (default: 1)
+#' @param inr_night [int] no. of nighttime INRs (default: 1)
+#' @param ed_pt [int] no. of ED patients (default: 107,700)
+#' @param st_pt [int] no. of stroke patients (default: 750)
+#' @param ais_pt [int] no. of AIS patients (default: 450)
+#' @param ecr_pt [int] no. of ECR patients (default: 58)
+#' @param inr_pt [int] no. of INR patients (default: 104)
+#' @param eir_pt [int] no. of EIR patients (default: 468)
+#' @param ir_pt [int] no. of IR patients (default: 3,805)
+#' @param shifts [vec] shift start and end time (default: c(8,17))
+#' @param nsim [int] no. of simulation repeats (default: 30)
+#' @param run_t [int] days to simulate (default: 365)
+#' 
+#' @return list of arrivals and resources data 
 
 simulate_nav <- function(ct = 2, angio_inr = 1, angio_ir = 1, 
                          stroke_staff = 1, ed_staff = 10, angio_staff = 6,
@@ -27,36 +56,6 @@ simulate_nav <- function(ct = 2, angio_inr = 1, angio_ir = 1,
                          st_pt = 750, ais_pt = 450, ecr_pt = 58, 
                          inr_pt = 104, eir_pt= 468, ir_pt = 3805,  
                          shifts = c(8,17), nsim = 30, run_t = 365) {
-  
-  ########################################################################
-  ######### A function to perform DES applied to ECR service ############# 
-  ########################################################################
-  ## Inputs: 
-  ## ct:                [int] no. of CT scan machines (default = 2)
-  ## angio_inr:         [int] no. of INR+IR angio. machines (default = 1)
-  ## angio_ir:          [int] no. of IR angio. machines (default = 1)
-  ## stroke_staff:      [int] no. of stroke  staff (default = 1)
-  ## ed_staff:          [int] no. of ED staff (default = 10)
-  ## angio_staff:       [int] no. of angio. staff (default = 10)
-  ## ir:                [int] no. of IRs (default = 1)
-  ## inr:               [int] no. of INRs (default = 1)
-  ## angio_staff_night: [int] no. of angio. night staff (default = 3)
-  ## ir_night:          [int] no. of night IRs (default = 1)
-  ## inr_night:         [int] no. of night INRs (default = 1)
-  ## ed_pt:             [int] no. of ED patients (default = 107,000)
-  ## st_pt:             [int] no. of stroke patients (default = 750)
-  ## ais_pt:            [int] no. of AIS patients (default = 450)
-  ## ecr_pt:            [int] no. of ECR patients (default = 58)
-  ## inr_pt:            [int] no. of elective INR patients (default = 300)
-  ## eir_pt:            [int] no. of emergency IR patients (default = 1,000)
-  ## ir_pt:             [int] no. of elective IR patients (default = 4,000)
-  ## shifts:            [vec] shift start/end hours (default = c(8,17))
-  ## nsim:              [int] no. of simulations to run (default = 1)
-  ## run_t:             [int] run time of simulation (default = 10,000)
-  #######################################################################
-  ## Outputs:
-  ##                    [lst] list of arrivals/resources monitoring stats
-  #######################################################################
   
   ## MODEL PARAMETERS ##
   
@@ -100,7 +99,7 @@ simulate_nav <- function(ct = 2, angio_inr = 1, angio_ir = 1,
   
   #######################################################################
   
-  ## MODEL ##
+  ## SPECIFY PATIENT TRAJECTORIES ##
   
   ecr_traj <- trajectory("ecr trajectory") %>% # ECR patient trajectory
     seize("angio_inr", 1) %>% # angio_INR machine in use
@@ -225,7 +224,7 @@ simulate_nav <- function(ct = 2, angio_inr = 1, angio_ir = 1,
     release("ir",1) %>% # IR available
     release("angio_staff",3) # 3x angio_staff available
   
-  #######################################################################
+  ##############################################################################
   
   ## MODEL SIMULATION ##
   
@@ -276,7 +275,7 @@ simulate_nav <- function(ct = 2, angio_inr = 1, angio_ir = 1,
     #wrap()
   })
   
-  #######################################################################
+  ##############################################################################
   
   ## RETURN SIMULATION OUTPUT ##
   
