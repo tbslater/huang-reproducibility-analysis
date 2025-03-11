@@ -142,6 +142,7 @@ plot_func(sim_lst, scenarios)
 #' @param lst_5pm [lst] list of output from `simulat_nav` for the 5pm scenarios
 #' @param lst_6pm [lst] list of output from `simulat_nav` for the 6pm scenarios
 #' @param lst_7pm [lst] list of output from `simulat_nav` for the 7pm scenarios
+#' @param scenarios [vec] vector of scenarios in order of lst_...
 #' 
 #' @return plot of the relative wait time probabilities for extra hours
 
