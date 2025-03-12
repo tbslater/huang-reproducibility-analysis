@@ -86,7 +86,7 @@ The DES model was simulated ten times for each scenario using the code provided.
 
 My attempt to recreate figure 2 from the paper was for the most part unsuccessful. The closest plot I produced is not a match to the original, despite some similarities. The density shapes are inconsistent in most cases and specific values are out.
 
-![Reproduction of figure 2 from Huang et al. 2019](huang_blog_fig2.png){width="85%" fig-align="center"}
+![Reproduction of figure 2 from Huang et al. 2019](figures/huang_fig2_reproduced.png){width="85%" fig-align="center"}
 
 **FIGURE 3**
 
