@@ -12,7 +12,6 @@ theme: flatly
 title-block-banner: true
 title-block-banner-colour: "#00008B"
 citeproc: true
-bibliography: huang_blog_refs.bib
 csl: diabetologia.csl
 ---
 
@@ -34,7 +33,7 @@ Huang, S. W., J. Maingard, H. K. Kok, C. D. Barras, V. Thijs, R. V. Chandra, D. 
 
 ## INTRODUCTION
 
-Reproducible research is critical. Publishing work that can be understood, replicated and developed by others is key to accelerating growth in any field. Yet, research as a whole is not reproducible, perhaps alarmingly so @RN7 , and, in the interest of this article, modelling and simulation is certainly no exception to this [@RN4; @RN6].
+Reproducible research is critical. Publishing work that can be understood, replicated and developed by others is key to accelerating growth in any field. Yet, research as a whole is not reproducible, perhaps alarmingly so , and, in the interest of this article, modelling and simulation is certainly no exception to this.
 
 Reproducibility is even more vital when modelling in a healthcare setting, given the potential ethical implications of the work. When taking the Hippocratic Oath, doctors promise to share their knowledge to advance healthcare, but there is no such mandate for health data scientists. Nonetheless, health data scientists ought to hold an individual responsibility to facilitate the sharing of their work. This can and will only ever be achieved if reproducibility best practices are adhered to.
 
@@ -54,11 +53,11 @@ DES is frequently applied to investigate patient flows within a range of healthc
 
 In the paper, DES is used to model endovascular clot retrieval (ECR) treatment allocation for acute ischaemic stroke (AIS) patients. AIS patients are in direct competition for resources with elective non-stroke interventional neuroradiology (elective INR), emergency interventional radiology (emergency IR) and elective interventional radiology (elective IR) patients. The system diagram below shows the possible patient pathways, including arrival, queuing, resource occupancy and system exits. For more detailed model information, please refer to the original paper.
 
-![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 [@RN3]](figures/huang_fig1_original.jpg){fig-align="center" width="60%"}
+![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019](figures/huang_fig1_original.jpg){fig-align="center" width="60%"}
 
 Huang et al. were interested in how patient waiting times and resource usage varied under different scenarios:
 
-1.  **Baseline:** standard procedure under specified parameters[@RN3].
+1.  **Baseline:** standard procedure under specified parameters.
 2.  **Exclusive-use:** elective IR patients can only use the IR angiography machine.
 3.  **Double angio INRs:** an extra INR angiography machine in place of an IR one.
 
@@ -78,7 +77,7 @@ In line with the original study, I repeated simulations for each scenario thirty
 
 #### FIGURE 2
 
-![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 [@RN3]](figures/huang_fig2_original.jpg){fig-align="center" width="70%"}
+![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 ](figures/huang_fig2_original.jpg){fig-align="center" width="70%"}
 
 My attempt to recreate figure 2 from the paper was for the most part unsuccessful. The closest plot I produced is not a match to the original, despite some similarities. The density shapes are inconsistent in most cases and specific values are out.
 
@@ -86,7 +85,7 @@ My attempt to recreate figure 2 from the paper was for the most part unsuccessfu
 
 #### FIGURE 3
 
-![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 [@RN3]](figures/huang_fig3_original.jpg){fig-align="center" width="70%"}
+![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 ](figures/huang_fig3_original.jpg){fig-align="center" width="70%"}
 
 Reproduction of figure 3 was not achieved. Similar to figure 2, the densities are not consistent with the original plot. On top of this, the results I obtained for the baseline and double angio INR scenarios suggest a slight reduction in the waiting times when additional hours are added to the shift. This is a direct contradiction to a conclusion from the paper: only the exclusive-use scenario was found to see a significant drop in the wait times with one and two hours of extra work.
 
@@ -94,7 +93,7 @@ Reproduction of figure 3 was not achieved. Similar to figure 2, the densities ar
 
 #### FIGURE 4
 
-![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 [@RN3]](figures/huang_fig4_original.jpg){fig-align="center" width="70%"}
+![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 ](figures/huang_fig4_original.jpg){fig-align="center" width="70%"}
 
 I was close to being able to reproduce figure 4. My resulting plot has a similar shape to the original figure and the general conclusions associated with it can be reached. However, the exact mean values for disability-free life are not quite consistent with those Huang et al. obtained. It is difficult to claim true reproducibility with this being the case.
 
@@ -102,7 +101,7 @@ I was close to being able to reproduce figure 4. My resulting plot has a similar
 
 #### FIGURE 5
 
-![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 [@RN3]](figures/huang_fig5_original.jpg){fig-align="center" width="70%"}
+![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 ](figures/huang_fig5_original.jpg){fig-align="center" width="70%"}
 
 Again, reproducing figure 5 was very nearly achieved, but not quite. I managed to obtain similar angio INR utilisation percentages when compared to the original. The value for the two angio INR scenario was in fact an exact match, but the other two were slightly out.
 
@@ -110,7 +109,7 @@ Again, reproducing figure 5 was very nearly achieved, but not quite. I managed t
 
 #### SUPPLEMENTARY FIGURE
 
-![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 [@RN3]](figures/huang_suppfig_original.png){fig-align="center" width="70%"}
+![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 ](figures/huang_suppfig_original.png){fig-align="center" width="70%"}
 
 The methods required to reproduce the supplementary figure were largely similar to those used for figures 2 and 3 and so unsurprisingly reproduction was unsuccessful. I did manage to get somewhat consistent patterns to the paper - i.e. double and triple the number of patients follow a similar trend to the baseline number of patients - but the densities were not a match.
 
