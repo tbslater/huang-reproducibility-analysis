@@ -19,52 +19,62 @@ csl: diabetologia.csl
 This article documents a reproducibility analysis of a 2019 paper by Huang et al. in health simulation. I will make extensive reference to the paper throughout the report and so to give full recognition to the authors, the reference is provided below.
 
 ::: {.callout-note icon="false"}
-## Huang et al. 2019
+## Original Paper
 
 Huang, S. W., J. Maingard, H. K. Kok, C. D. Barras, V. Thijs, R. V. Chandra, D. M. Brooks, and H. Asadi. 2019. “Optimizing Resources for Endovascular Clot Retrieval for Acute Ischemic Stroke, a Discrete Event Simulation. ” Journal Article. Frontiers in Neurology 10. <https://doi.org/10.3389/fneur.2019.00653>.
 :::
 
+The original model code can be found on GitHub and is freely available under the GPL-3.0 licence.
+
+::: {.callout-note icon="false"}
+## Source Code
+
+Huang, S. W., J. Maingard, H. K. Kok, C. D. Barras, V. Thijs, R. V. Chandra, D. M. Brooks, and H. Asadi. 2019. <https://github.com/shiweih/desECR.git> \[Last accessed: 13/03/2025\].
+:::
+
 ## INTRODUCTION
 
-Reproducible research is critical. Publishing work that can be understood, replicated and developed by others is key to accelerating growth in any field. Yet, research as a whole is not reproducible. Reproducibility is of such great concern in some areas that many refer to it being in a crisis @RN7 and, in the interest of this article, modelling and simulation is certainly no exception to this [@RN4; @RN6].
+Reproducible research is critical. Publishing work that can be understood, replicated and developed by others is key to accelerating growth in any field. Yet, research as a whole is not reproducible, perhaps alarmingly so @RN7 , and, in the interest of this article, modelling and simulation is certainly no exception to this [@RN4; @RN6].
 
-Reproducibility is particularly important for healthcare simulation, given the potential consequences of the research. When taking the Hippocratic Oath, doctors promise to share their knowledge to advance healthcare, but there is no such mandate for health data scientists. Nonetheless, health data scientists ought to hold an individual responsibility to facilitate the sharing of their work. Researchers can, admittedly, be forgiven for lacking dedication to this cause; it takes time to invest in a paper's reproducibility. But I would strongly argue this is time well spent.
+Reproducibility is even more vital when modelling in a healthcare setting, given the potential ethical implications of the work. When taking the Hippocratic Oath, doctors promise to share their knowledge to advance healthcare, but there is no such mandate for health data scientists. Nonetheless, health data scientists ought to hold an individual responsibility to facilitate the sharing of their work. This can and will only ever be achieved if reproducibility best practices are adhered to.
 
 In an attempt to encourage reproducible research in health simulation, I am documenting my findings from a reproducibility analysis on a discrete-event simulation paper. I will introduce the model and discuss my attempts to reproduce the key results later in the article.
 
 ## DISCRETE-EVENT SIMULATION
 
-It is worthwhile to briefly explain what discrete-event simulation (henceforth referred to as DES) is before proceeding.
+Before proceeding, I will briefly mention what discrete-event simulation is (henceforth referred to as DES).
 
-DES is a type of simulation model, typically used in operational research. It models arrivals, exits and internal movements within a system as a network of entities, resources and queues. Individual entities may enter the system, leave the system, occupy a resource or queue for a resource at any given time. A fundamental property of DES is that changes to a system can only occur when one of the above events are triggered; i.e. time is dictated by discrete events. Several discrete events may occur at once and so a key area of interest is the order in which DES deals with these. DES is frequently applied to investigate patient flows within a range of healthcare settings. The paper of focus, *'Optimizing Resources for Endovascular Clot Retrieval for Acute Ischemic Stroke, a Discrete Event Simulation',* is one such example.
+DES is a type of simulation model, typically used in operational research. It models arrivals, exits and internal movements within a system as a network of entities, resources and queues. Individual entities may enter the system, leave the system, occupy a resource or queue for a resource at any given time.
+
+A fundamental property of DES is that changes to a system can only occur when events are triggered. Thus, time progession is directly dictated by discrete events (hence, *discrete-event* simulation). Several discrete events may occur at once and so a key area of interest is the order in which DES deals with these.
+
+DES is frequently applied to investigate patient flows within a range of healthcare settings. The paper of focus, *'Optimizing Resources for Endovascular Clot Retrieval for Acute Ischemic Stroke, a Discrete Event Simulation',* is one such example.
 
 ## THE MODEL
 
-The model from Huang et al., 2019, uses DES to represent endovascular clot retrieval (ECR) treatment allocation for acute ischaemic stroke (AIS) patients. AIS patients are in direct competition for resources with elective non-stroke interventional neuroradiology (elective INR), emergency interventional radiology (emergency IR) and elective interventional radiology (elective IR) patients. The system diagram, given below, identifies the possible patient pathways. For more detailed information of the model, please refer to the original paper.
+In the paper, DES is used to model endovascular clot retrieval (ECR) treatment allocation for acute ischaemic stroke (AIS) patients. AIS patients are in direct competition for resources with elective non-stroke interventional neuroradiology (elective INR), emergency interventional radiology (emergency IR) and elective interventional radiology (elective IR) patients. The system diagram below shows the possible patient pathways, including arrival, queuing, resource occupancy and system exits. For more detailed model information, please refer to the original paper.
 
 ![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 [@RN3]](figures/huang_fig1_original.jpg){fig-align="center" width="60%"}
 
 Huang et al. were interested in how patient waiting times and resource usage varied under different scenarios:
 
 1.  **Baseline:** standard procedure under specified parameters[@RN3].
-2.  **Exclusive-use:** angio IR patients can only use the angio IR machine.
-3.  **Double angio INRs:** two angio INRs and no angio IR machine.
+2.  **Exclusive-use:** elective IR patients can only use the IR angiography machine.
+3.  **Double angio INRs:** an extra INR angiography machine in place of an IR one.
 
-Additionally, Huang et al. investigated the impact of adding an extra one and two hours to daytime shifts.
+The impact of adding an extra one and two hours to daytime shifts was also trialled under each of these scenarios.
 
-The paper's key results are given in five plots, all of which are shown below and I aimed to reproduce in the analysis.
+The key results of the paper are figure 2-5, as well as a supplementary figure submitted alongside the article. The success of my reproduction attempts will be directly assessed against these five plots.
 
 ## CODE
 
-Huang et al. use the R package `simmer` to run simulations of their model. The package is designed for DES use and documentation can be found at <https://cran.r-project.org/web/packages/simmer/index.html> [@RN9].
+The R package `simmer` is used for simulation. The package is designed for DES model implementation and documentation can be found at [https://cran.r-project.org/web/packages/simmer/index.html](#0){.uri} [@RN9].
 
-Code used by Huang et al. is freely available at <https://github.com/shiweih/desECR>.
-
-It should be said that just by providing open code, the degree of reproducibility is enhanced. Huang et al. should be commended for doing this. In general, however, this is not enough; code shared must readable and usable. Fortunately, I largely found this to be the case for the code provided. Though additional comments may have been useful, reasonable knowledge of `simmer` and DES theory is sufficient for comprehension. The function used to run the simulation worked fine and was easily adaptable. A minor criticism is that, to me at least, the purpose of the plotting function was unclear, as none of the plots were relevant to those in the paper.
+In order for a reproducibility analysis to be performed in the first place, open code must be provided and this has been done by the authors via GitHub (found at <https://github.com/shiweih/desECR>). Huang et al. ought to be commended for doing this, as this in itself drastically increases the reproducibility of their work. However, this is not necessarily enough; code that is not readable or fails to run is not of much use. Fortunately, I did not find this to be the case. Though additional comments may have been useful, reasonable knowledge of `simmer` and DES theory is sufficient for comprehension. The function used to run the simulation worked fine and was easily adaptable. A minor criticism is that, to me at least, the purpose of the plotting function was unclear, as none of the plots were relevant to those in the paper. So my own code has removed this and created plotting functions from scratch.
 
 ## RESULTS
 
-In line with the original study, I repeated simulations for each scenario thirty times. A reproducibility seed of `11032025` was used, as a nod to the date simulations were run. The amount of time spent on figure reproductions was not pre-specified. I simply kept on going until I had reached a point that reflected a 'best' attempt. Whilst it may have been better practice to give myself a timed cut-off, or at least to document timings, this analysis served as an introduction to DES for me and so lines between learning general DES coding and model comprehension and modification often became blurred. More experienced researchers ought to be more rigorous.
+In line with the original study, I repeated simulations for each scenario thirty times. A reproducibility seed of `11032025` was used, as a nod to the date simulations were run. The amount of time spent on figure reproductions was not pre-specified. I simply kept on going until I had reached a point that reflected a 'best' attempt. Whilst it may have been better practice to give myself a timed cut-off, or at least to document some timings, this analysis served as an introduction to DES for me and so lines between learning general DES coding and specific model comprehension and modification often became blurred. Experienced researchers ought to be more rigorous with time spent.
 
 #### FIGURE 2
 
@@ -78,7 +88,7 @@ My attempt to recreate figure 2 from the paper was for the most part unsuccessfu
 
 ![Discrete-event simulation system diagram - figure 1 from Huang et al. 2019 [@RN3]](figures/huang_fig3_original.jpg){fig-align="center" width="70%"}
 
-Reproduction of figure 3 was not achieved. Similar to figure 2, the densities are not consistent with the original plot. On top of this, the results I obtained for the baseline and double angio INR scenarios suggest a clear reduction in the waiting times when additional hours are added to the shift. This is a direct contradiction to a conclusion from the paper: only the exclusive-use scenario was found to see a significant drop in the wait times with one and two hours of extra work.
+Reproduction of figure 3 was not achieved. Similar to figure 2, the densities are not consistent with the original plot. On top of this, the results I obtained for the baseline and double angio INR scenarios suggest a slight reduction in the waiting times when additional hours are added to the shift. This is a direct contradiction to a conclusion from the paper: only the exclusive-use scenario was found to see a significant drop in the wait times with one and two hours of extra work.
 
 ![Reproduction of figure 3 from Huang et al. 2019](figures/huang_fig3_reproduced.png){fig-align="center" width="70%"}
 
