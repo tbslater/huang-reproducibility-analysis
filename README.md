@@ -19,3 +19,6 @@ R code associated with the reproducibility analysis can be found in `/code` fold
 -   `huang_sim.R` contains the simulation function adapted from the original source code. 
 
 The R package `simmer` is used extensively and I recommend getting to grips with this before using the above code. 
+
+## Citation
+> Slater, T. (2025). tbslater/huang-reproducibility-analysis: Version 1.0.0 (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.15025508
