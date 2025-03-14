@@ -1,8 +1,8 @@
 ---
-title: "Reproducing Huang et al., 2019"
+title: "Reproducibility analysis: Huang et al. (2019)"
 subtitle: "A reproducibility analysis of discrete-event simulation in healthcare"
-author: "Thomas Slater"
-date: "03/13/2025"
+author: "Tom Slater"
+date: "03/14/2025"
 format: 
   html:
     embed-resources: true
@@ -14,7 +14,7 @@ title-block-banner-colour: "#00008B"
 citeproc: true
 csl: diabetologia.csl
 image: "figures/huang_fig1_original.jpg"
-categories: [Analysis]
+categories: [Analysis, Reproducibility, R]
 ---
 
 This article documents a reproducibility analysis of a 2019 paper by Huang et al. in health simulation \[1\]. I will make extensive reference to the paper throughout the report and so to give full recognition to the authors, the reference is provided below.
@@ -22,16 +22,18 @@ This article documents a reproducibility analysis of a 2019 paper by Huang et al
 ::: {.callout-note icon="false"}
 ## Original Paper
 
-Huang, S. W., J. Maingard, H. K. Kok, C. D. Barras, V. Thijs, R. V. Chandra, D. M. Brooks, and H. Asadi. 2019. “Optimizing Resources for Endovascular Clot Retrieval for Acute Ischemic Stroke, a Discrete Event Simulation. ” Journal Article. Frontiers in Neurology 10. <https://doi.org/10.3389/fneur.2019.00653>.
+Huang, S., et al. Optimizing Resources for Endovascular Clot Retrieval for Acute Ischemic Stroke, a Discrete Event Simulation. Front Neurol, 2019. 10: p. 653. <https://doi.org/10.3389/fneur.2019.00653>.
 :::
 
-The original model code can be found on GitHub \[2\] and is freely available under the GPL-3.0 licence.
+The code associated with the paper can be found on GitHub \[2\] and is freely available under the GPL-3.0 licence.
 
 ::: {.callout-note icon="false"}
 ## Source Code
 
-Huang, S. W., J. Maingard, H. K. Kok, C. D. Barras, V. Thijs, R. V. Chandra, D. M. Brooks, and H. Asadi. 2019. <https://github.com/shiweih/desECR.git> \[Last accessed: 13/03/2025\].
+Huang, S., et al. desECR. 2019 \[Accessed: 13/03/2025\]; Available from: <https://github.com/shiweih/desECR.git.>
 :::
+
+***Time to read:** 8 minutes*
 
 ## INTRODUCTION
 
@@ -53,35 +55,35 @@ DES is frequently applied to investigate patient flows within a range of healthc
 
 ## THE MODEL
 
-In the paper, DES is used to model endovascular clot retrieval (ECR) treatment allocation for acute ischaemic stroke (AIS) patients. AIS patients are in direct competition for resources with elective non-stroke interventional neuroradiology (elective INR), emergency interventional radiology (emergency IR) and elective interventional radiology (elective IR) patients. The system diagram below shows the possible patient pathways, including arrival, queuing, resource occupancy and system exits. For more detailed model information, please refer to the original paper.
+In the paper, DES is used to model endovascular clot retrieval (ECR) treatment allocation for acute ischaemic stroke (AIS) patients. AIS patients are in direct competition for resources with elective non-stroke interventional neuroradiology (elective INR), emergency interventional radiology (emergency IR) and elective interventional radiology (elective IR) patients. The system diagram below shows the possible patient pathways, including arrival, queuing, resource occupancy and system exits. For more detailed model information, please refer to the original paper \[1\].
 
 ![Figure 1 taken from Huang et al., 2019 \[1\]](figures/huang_fig1_original.jpg){fig-align="center" width="60%"}
 
 Huang et al. were interested in how patient waiting times and resource usage varied under different scenarios:
 
 1.  **Baseline:** standard procedure under specified parameters.
-2.  **Exclusive-use:** elective IR patients can only use the IR angiography machine.
+2.  **Exclusive-use:** elective IR patients restricted to use of only the IR angiography machine.
 3.  **Double angio INRs:** an extra INR angiography machine in place of an IR one.
 
 The impact of adding an extra one and two hours to daytime shifts was also trialled under each of these scenarios.
 
-The key results of the paper are figure 2-5, as well as a supplementary figure submitted alongside the article. The success of my reproduction attempts will be directly assessed against these five plots.
+The key results of the paper are figures 2-5, as well as a supplementary figure, which was submitted with the article. The success of my reproduction attempts were directly assessed against these five plots.
 
 ## CODE
 
-The R package `simmer` is used for simulation. The package is designed for DES model implementation and documentation can be found at [https://cran.r-project.org/web/packages/simmer/index.html](#0){.uri} \[8\].
+The R package `simmer` is used for running the simulations. The package is designed for DES model implementation and documentation can be found at [https://cran.r-project.org/web/packages/simmer/index.html](#0){.uri} \[8\].
 
-In order for a reproducibility analysis to be performed in the first place, open code must be provided and this has been done by the authors via GitHub (found at <https://github.com/shiweih/desECR> \[2\]). Huang et al. ought to be commended for doing this, as this in itself drastically increases the reproducibility of their work. However, this is not necessarily enough; code that is not readable or fails to run is not of much use. Fortunately, I did not find this to be the case. Though additional comments may have been useful, reasonable knowledge of `simmer` and DES theory is sufficient for comprehension. The function used to run the simulation worked fine and was easily adaptable. A minor criticism is that, to me at least, the purpose of the plotting function was unclear, as none of the plots were relevant to those in the paper. So my own code has removed this and created plotting functions from scratch.
+In order for a reproducibility analysis to be performed in the first place, open code must be provided and this has been done by the authors via GitHub (found at <https://github.com/shiweih/desECR> \[2\]). Huang et al. ought to be commended for doing this, as this in itself drastically increases the reproducibility of their work. However, in general this is not enough; code that is not readable or fails to run is not of much use to anyone. Fortunately, I did not find this to be the case here. Though additional comments may have been useful, reasonable knowledge of `simmer` and DES theory is sufficient to grasp the model. I was also pleased to discover that the function used to run the simulations worked fine and was easily adaptable. The only minor criticism I had was that, to me at least, the purpose of the plotting function was unclear, as none of the plots were relevant to those in the paper. I hence removed this function from my own code and devised some plotting functions from scratch.
 
 ## RESULTS
 
-In line with the original study, I repeated simulations for each scenario thirty times. A reproducibility seed of `11032025` was used, as a nod to the date simulations were run. The amount of time spent on figure reproductions was not pre-specified. I simply kept on going until I had reached a point that reflected a 'best' attempt. Whilst it may have been better practice to give myself a timed cut-off, or at least to document some timings, this analysis served as an introduction to DES for me and so lines between learning general DES coding and specific model comprehension and modification often became blurred. Experienced researchers ought to be more rigorous with time spent.
+In line with the original study, I repeated simulations for each of the scenarios thirty times. A reproducibility seed of `11032025` was used, as a nod to the date simulations were run. The amount of time spent on figure reproductions was not pre-specified. I simply kept on going until I had reached a point that reflected a 'best' attempt. Whilst it may have been better practice to give myself a timed cut-off, or at least to document some timings, this analysis served as an introduction to DES for me and so lines between learning general DES coding and specific model comprehension and modification often became blurred. Experienced researchers ought to be more rigorous with their time spent.
 
 **FIGURE 2**
 
 ![Figure 2 taken from Huang et al., 2019 \[1\]](figures/huang_fig2_original.jpg){fig-align="center" width="70%"}
 
-My attempt to recreate figure 2 from the paper was for the most part unsuccessful. The closest plot I produced is not a match to the original, despite some similarities. The density shapes are inconsistent in most cases and specific values are out.
+My attempt to recreate figure 2 from the paper was for the most part unsuccessful. The closest plot I produced did not sufficiently match the original, despite there being some similarities. In short, the density shapes are inconsistent in most cases and specific values are out.
 
 ![Reproduction of figure 2 from Huang et al., 2019 \[1\]](figures/huang_fig2_reproduced.png){fig-align="center" width="70%"}
 
@@ -89,7 +91,7 @@ My attempt to recreate figure 2 from the paper was for the most part unsuccessfu
 
 ![Figure 3 taken from Huang et al., 2019 \[1\]](figures/huang_fig3_original.jpg){fig-align="center" width="70%"}
 
-Reproduction of figure 3 was not achieved. Similar to figure 2, the densities are not consistent with the original plot. On top of this, the results I obtained for the baseline and double angio INR scenarios suggest a slight reduction in the waiting times when additional hours are added to the shift. This is a direct contradiction to a conclusion from the paper: only the exclusive-use scenario was found to see a significant drop in the wait times with one and two hours of extra work.
+Reproduction of figure 3 was also not achieved. Similar to figure 2, the densities are not consistent with the original plot. On top of this, the results I obtained for the baseline and double angio INR scenarios suggest a slight reduction in the waiting times when additional hours are added to the shift. This is a direct contradiction to a conclusion from the paper: only the exclusive-use scenario was found to see a significant drop in the wait times with one and two hours of extra work.
 
 ![Reproduction of figure 3 from Huang et al., 2019 \[1\]](figures/huang_fig3_reproduced.png){fig-align="center" width="70%"}
 
@@ -97,7 +99,7 @@ Reproduction of figure 3 was not achieved. Similar to figure 2, the densities ar
 
 ![Figure 4 taken from Huang et al., 2019 \[1\]](figures/huang_fig4_original.jpg){fig-align="center" width="70%"}
 
-I was close to being able to reproduce figure 4. My resulting plot has a similar shape to the original figure and the general conclusions associated with it can be reached. However, the exact mean values for disability-free life are not quite consistent with those Huang et al. obtained. It is difficult to claim true reproducibility with this being the case.
+I was close to being able to reproduce figure 4. My resulting plot had a similar shape to the original figure and the general conclusions associated with it were reached. However, the exact mean values for disability-free life are not quite consistent with those Huang et al. obtained and so it is difficult to claim true reproducibility with this being the case.
 
 ![Reproduction of figure 4 from Huang et al., 2019 \[1\]](figures/huang_fig4_reproduced.png){fig-align="center" width="85%"}
 
@@ -105,7 +107,7 @@ I was close to being able to reproduce figure 4. My resulting plot has a similar
 
 ![Figure 5 taken from Huang et al., 2019 \[1\]](figures/huang_fig5_original.jpg){fig-align="center" width="70%"}
 
-Again, reproducing figure 5 was very nearly achieved, but not quite. I managed to obtain similar angio INR utilisation percentages when compared to the original. The value for the two angio INR scenario was in fact an exact match, but the other two were slightly out.
+Again, reproducing figure 5 was very nearly achieved, but not quite. I managed to obtain similar angio INR utilisation percentages when compared to the original. The value for the two angio INR scenario was in fact an exact match, but the other two were slightly out and so were not reproduced.
 
 ![Reproduction of figure 5 from Huang et al., 2019 \[1\]](figures/huang_fig5_reproduced.png){fig-align="center" width="85%"}
 
@@ -113,7 +115,7 @@ Again, reproducing figure 5 was very nearly achieved, but not quite. I managed t
 
 ![The supplementary figure associated with Huang et al., 2019 \[1\]](figures/huang_suppfig_original.png){fig-align="center" width="70%"}
 
-The methods required to reproduce the supplementary figure were largely similar to those used for figures 2 and 3 and so unsurprisingly reproduction was unsuccessful. I did manage to get somewhat consistent patterns to the paper - i.e. double and triple the number of patients follow a similar trend to the baseline number of patients - but the densities were not a match.
+The methods required to reproduce the supplementary figure were largely similar to those used for figures 2 and 3 and so unsurprisingly reproduction was unsuccessful. I did, however, manage to get somewhat consistent patterns to the paper - i.e. double and triple the number of patients follow a similar trend to the baseline number of patients - but the densities were not a match.
 
 ![Reproduction of the supplementary figure from Huang et al., 2019 \[1\]](figures/huang_suppfig_reproduced.png){fig-align="center" width="70%"}
 
@@ -121,11 +123,11 @@ The methods required to reproduce the supplementary figure were largely similar 
 
 **SEED FOR REPRODUCIBILITY**
 
-The model included elements of stochasticity, yet these were not controlled for through the use of a random seed. Without a reproducible seed, the output obtained by Huang et al. and my own output were subject to randomness and so results may not always align. It was unclear whether discrepancies in the two sets of results were due to randomness or if it was something else.
+The model included elements of stochasticity, yet these were not controlled for through the use of a random seed. Without a reproducible seed, the output obtained by Huang et al. and my own output were subject to randomness and so results were unlikely to align. This made it difficult to decipher whether discrepancies in the results were just due to randomness or if it was something else.
 
 **WAITING TIME PROBABILITIES**
 
-Producing figures 2 and 3, as well as the supplementary figure, required the standardisation of mean waiting times. An explanation of how this was carried out was not included in the paper, requiring some of my own guess work to perform this transformation. In all likelihood, the method I used was not the same as the one in the paper, but remains my closest attempt.
+Producing figures 2 and 3, as well as the supplementary figure, required the standardisation of mean waiting times. An explanation of how this was carried out was not included in the paper, mandating the inclusion of my own guess work. In all likelihood, the method I used was not the same as the one in the paper but I settled on it as a best attempt.
 
 The approach I used can be summarised as follows:
 
@@ -140,9 +142,9 @@ It was clear from the paper that the output of figure 4 was just a function of t
 
 ## FINAL COMMENTS
 
-It should be said that the intention of this article is not to criticise the work of Huang et al. It is merely meant to advocate for the need for reproducibility and to document my attempts to reproduce this particular piece of work. Huang et al. should be commended for their strong research: they have successfully constructed a fairly complex DES model and have achieved some substantial results. Nonetheless, it is my conclusion that their work is not able to be reproduced. Importantly, this is my conclusion. The results obtained are exclusively my attempts and it may be that others can in fact reproduce the figures successfully, but to the best of my ability I believe it cannot be done. So, despite a thorough piece of research, the paper is not easily verified. I would, however, argue that Huang et al. have provided us with something that can be manipulated and developed by others. Their code was very readable and ran well, it was just the specific plots that proved problematic.
+It should be said that the intention of this article is not to criticise the work of Huang et al. It is merely meant to advocate for the need for reproducibility and to document my attempts to reproduce this particular piece of work. Huang et al. should be commended for their strong research: they successfully constructed a complex DES model and achieved some substantial and impactful results. Nonetheless, it is my conclusion that their work is not able to be reproduced. Importantly, this is my conclusion. The results obtained are exclusively my attempts and it may be that others can in fact reproduce the figures successfully. But to the best of my ability I believe it cannot be done. So, despite a thorough piece of research, the paper cannot be verified. I would, however, argue that Huang et al. have provided us with something that can be easily manipulated and developed for use in a similar healthcare application. Their code was very readable and ran well, it was just the specific plots that proved problematic.
 
-Advocating for computationally reproducibility, I ought to make sufficient attempts to ensure the results in this article are themselves reproducible. In light of this, I have upload my code to GitHub <https://github.com/tbslater/huang-reproducibility-analysis.git>.
+Advocating for computationally reproducibility, I ought to make sufficient attempts to ensure the results in this article are themselves reproducible. In light of this, I have upload my code to GitHub <https://github.com/tbslater/huang-reproducibility-analysis.git>. Please do not hesitate to get in touch if you have any questions or feedback from this piece of analysis.
 
 ## REFERENCES
 
