@@ -10,4 +10,12 @@ Original source code can be found at <https://github.com/shiweih/desECR.git.>
 
 ### [Check out the results of my analysis here!](https://tbslater.github.io/public-health-simulation/posts/reproducing-huang-et-al/huang-blog-post.html)
 
-## 
+## Code
+
+R code associated with the reproducibility analysis can be found in `/code` folder.
+
+-   `huang_plot.R` contains all the necessary functions for producing the plots. 
+-   `huang_run.R` calls the simulation function to run the various scenarios. 
+-   `huang_sim.R` contains the simulation function adapted from the original source code. 
+
+The R package `simmer` is used extensively and I recommend getting to grips with this before using the above code. 
