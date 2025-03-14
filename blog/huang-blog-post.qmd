@@ -30,7 +30,7 @@ The code associated with the paper can be found on GitHub \[2\] and is freely av
 ::: {.callout-note icon="false"}
 ## Source Code
 
-Huang, S., et al. desECR. 2019 \[Accessed: 13/03/2025\]; Available from: <https://github.com/shiweih/desECR.git.>
+Huang, S., et al. desECR. 2019 \[Accessed: 13/03/2025\]; Available from: s
 :::
 
 ***Time to read:** 8 minutes*
